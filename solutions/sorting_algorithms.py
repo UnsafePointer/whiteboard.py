@@ -55,6 +55,32 @@ def merge_sort(data: List[int]) -> None:
         j += 1
 
 
+def heapify_down(data: List[int], parent_index: int, size: int) -> None:
+    biggest_index = parent_index
+    left_child_index = parent_index * 2 + 1
+    right_child_index = parent_index * 2 + 2
+    if left_child_index < size and data[biggest_index] < data[left_child_index]:
+        biggest_index = left_child_index
+    if right_child_index < size and data[biggest_index] < data[right_child_index]:
+        biggest_index = right_child_index
+    if parent_index != biggest_index:
+        data[parent_index], data[biggest_index] = (
+            data[biggest_index],
+            data[parent_index],
+        )
+        heapify_down(data, biggest_index, size)
+
+
+def heap_sort(data: List[int]) -> None:
+    levels = len(data) // 2 - 1
+    for level in range(levels, -1, -1):
+        heapify_down(data, level, len(data))
+
+    for index in range(len(data) - 1, 0, -1):
+        data[index], data[0] = data[0], data[index]
+        heapify_down(data, 0, index)
+
+
 def main() -> None:
     # input = [int(c) for c in open("small_unsorted.txt", "r").readline().split(",")]
     input = [int(c) for c in open("big_unsorted.txt", "r").readline().split(",")]
@@ -65,6 +91,9 @@ def main() -> None:
     quick_sorted = input.copy()
     quick_sort(0, len(quick_sorted) - 1, quick_sorted)
     assert expected == quick_sorted
+    heap_sorted = input.copy()
+    heap_sort(heap_sorted)
+    assert expected == heap_sorted
     return
 
 
